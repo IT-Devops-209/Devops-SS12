@@ -54,6 +54,7 @@ jobs:
           host: ${{ secrets.SSH_HOST || vars.SSH_HOST || '103.72.57.95' }}
           username: ${{ secrets.SSH_USER || vars.SSH_USER || 'quanganh296' }}
           key: ${{ secrets.SSH_KEY || vars.SSH_KEY }}
+          password: ${{ secrets.SSH_PASSWORD }}
           script: |
             echo "Đăng nhập GHCR trên máy chủ VPS..."
             echo "${{ secrets.REGISTRY_TOKEN || secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
