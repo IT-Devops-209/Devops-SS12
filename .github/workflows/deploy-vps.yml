@@ -37,9 +37,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: |
-            ${{ env.IMAGE_NAME }}:latest
-            ghcr.io/${{ github.actor }}/my-app:latest
+          tags: ${{ env.IMAGE_NAME }}:latest
 
   deploy-vps:
     name: Deploy to VPS via SSH
@@ -50,7 +48,17 @@ jobs:
         run: |
           echo "IMAGE_NAME=ghcr.io/${GITHUB_REPOSITORY,,}" >> $GITHUB_ENV
 
+      - name: Kiểm tra cấu hình SSH Secrets
+        run: |
+          if [ -z "${{ secrets.SSH_HOST }}" ]; then
+            echo "⚠️ CẢNH BÁO: Chưa cấu hình SSH_HOST trong Repository Secrets."
+            echo "Vui lòng thêm SSH_HOST, SSH_USER, SSH_KEY vào Settings -> Secrets and variables -> Actions để deploy thực tế lên VPS."
+          else
+            echo "✅ Đã tìm thấy cấu hình SSH_HOST."
+          fi
+
       - name: Thực thi câu lệnh triển khai trên VPS qua SSH
+        if: secrets.SSH_HOST != ''
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.SSH_HOST }}
@@ -60,11 +68,11 @@ jobs:
             echo "Đăng nhập GHCR trên máy chủ VPS..."
             echo "${{ secrets.REGISTRY_TOKEN || secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
             echo "Kéo Image mới nhất từ GHCR..."
-            docker pull ghcr.io/${{ github.actor }}/my-app:latest || docker pull ${{ env.IMAGE_NAME }}:latest
+            docker pull ${{ env.IMAGE_NAME }}:latest
             echo "Dừng và gỡ bỏ container cũ nếu đang chạy..."
             docker stop my-app || true
             docker rm my-app || true
             echo "Khởi chạy Container mới trên cổng 8080..."
-            docker run -d --name my-app -p 8080:8080 -e "SPRING_PROFILES_ACTIVE=prod" --restart unless-stopped ghcr.io/${{ github.actor }}/my-app:latest || docker run -d --name my-app -p 8080:8080 --restart unless-stopped ${{ env.IMAGE_NAME }}:latest
+            docker run -d --name my-app -p 8080:8080 -e "SPRING_PROFILES_ACTIVE=prod" --restart unless-stopped ${{ env.IMAGE_NAME }}:latest
             echo "Kiểm tra tiến trình Container đang chạy:"
             docker ps -f name=my-app
