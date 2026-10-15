@@ -15,3 +15,7 @@ Repository bài tập Session 12 môn DevOps Specialist.
   - Kịch bản Workflow: `.github/workflows/cd-multi-env.yml` (bản sao tại `BaiTap3/cd-multi-env.yml`)
   - Báo cáo kỹ thuật: `BaiTap3/README.md`
   - Quản lý môi trường `staging` và `production` với Environment Protection Rules yêu cầu phê duyệt thủ công (Required reviewers).
+- **Bài 4:** Tự động triển khai ứng dụng Spring Boot (Container) lên VPS từ xa qua SSH
+  - Kịch bản Workflow: `.github/workflows/deploy-vps.yml` (bản sao tại `BaiTap4/deploy-vps.yml`)
+  - Báo cáo kỹ thuật: `BaiTap4/README.md`
+  - Tự động hóa build Docker Image đẩy lên GHCR và SSH vào máy chủ VPS kéo Image, khởi chạy container mới với `appleboy/ssh-action@v1.0.3`.
