@@ -43,22 +43,21 @@ jobs:
     name: Deploy to VPS via SSH
     needs: build-image
     runs-on: ubuntu-latest
+    env:
+      SSH_HOST: ${{ secrets.SSH_HOST }}
     steps:
       - name: Chuẩn hóa tên image sang chữ thường
         run: |
           echo "IMAGE_NAME=ghcr.io/${GITHUB_REPOSITORY,,}" >> $GITHUB_ENV
 
-      - name: Kiểm tra cấu hình SSH Secrets
+      - name: Thông báo trạng thái cấu hình SSH
+        if: env.SSH_HOST == ''
         run: |
-          if [ -z "${{ secrets.SSH_HOST }}" ]; then
-            echo "⚠️ CẢNH BÁO: Chưa cấu hình SSH_HOST trong Repository Secrets."
-            echo "Vui lòng thêm SSH_HOST, SSH_USER, SSH_KEY vào Settings -> Secrets and variables -> Actions để deploy thực tế lên VPS."
-          else
-            echo "✅ Đã tìm thấy cấu hình SSH_HOST."
-          fi
+          echo "⚠️ SSH_HOST chưa được cấu hình trong Repository Secrets."
+          echo "👉 Để deploy thực tế lên VPS, hãy vào Settings -> Secrets and variables -> Actions và thêm: SSH_HOST, SSH_USER, SSH_KEY."
 
       - name: Thực thi câu lệnh triển khai trên VPS qua SSH
-        if: secrets.SSH_HOST != ''
+        if: env.SSH_HOST != ''
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.SSH_HOST }}
