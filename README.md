@@ -11,3 +11,7 @@ Repository bài tập Session 12 môn DevOps Specialist.
   - Kịch bản Workflow: `.github/workflows/release.yml` (bản sao tại `BaiTap2/release.yml`)
   - Báo cáo kỹ thuật: `BaiTap2/README.md`
   - Đóng gói Multi-stage Docker Image và đẩy tự động lên GitHub Container Registry (`ghcr.io`) với Git Tag semantic versioning.
+- **Bài 3:** Tách biệt luồng CI/CD đa môi trường (Staging & Production) với GitHub Environments
+  - Kịch bản Workflow: `.github/workflows/cd-multi-env.yml` (bản sao tại `BaiTap3/cd-multi-env.yml`)
+  - Báo cáo kỹ thuật: `BaiTap3/README.md`
+  - Quản lý môi trường `staging` và `production` với Environment Protection Rules yêu cầu phê duyệt thủ công (Required reviewers).
